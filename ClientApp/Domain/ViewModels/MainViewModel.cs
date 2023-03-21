@@ -90,21 +90,24 @@ namespace ClientApp.Domain.ViewModels
                     {
                         Client.Connect(EndPoint);
 
-                        if (Client.Connected)
+                        Task.Run(() =>
                         {
-                            MessageBox.Show("Client Connected SERVER", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            var writer = Task.Run(() =>
+                            if (Client.Connected)
                             {
-                                while (true)
+                                MessageBox.Show("Client Connected SERVER", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                                var writer = Task.Run(() =>
                                 {
-                                    var stream = Client.GetStream();
-                                    var bw = new BinaryWriter(stream);
-                                    bw.Write(Username);
-                                }
-                            });
-                            Task.WaitAll(writer);
-                        }
+                                    while (true)
+                                    {
+                                        var stream = Client.GetStream();
+                                        var bw = new BinaryWriter(stream);
+                                        bw.Write(Username);
+                                    }
+                                });
+                                Task.WaitAll(writer);
+                            }
+                        }).Wait(100);
                     }
                     catch (Exception ex)
                     {
@@ -127,8 +130,11 @@ namespace ClientApp.Domain.ViewModels
 
             DisconnectedServerCommand = new RelayCommand((o) =>
             {
-                Client.Close();
-                Client.Dispose();
+                if (Client.Connected)
+                {
+                    Client.Close();
+                    Client.Dispose();
+                }
             });
         }
     }
