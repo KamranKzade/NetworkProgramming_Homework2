@@ -4,16 +4,15 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ServerApp
 {
     public class Program
     {
         public static BinaryReader BR { get; set; } = null;
-        public static List<TcpClient> Clients { get; set; }
-        public static TcpListener Listener { get; set; } = null;
         public static NetworkStream Stream { get; set; } = null;
+        public static TcpListener Listener { get; set; } = null;
+        public static List<TcpClient> Clients { get; set; }
 
 
         static void Main(string[] args)
@@ -21,7 +20,6 @@ namespace ServerApp
             var port = 27001;
             Clients = new List<TcpClient>();
             var ip = IPAddress.Parse("192.168.1.16");
-
             var ep = new IPEndPoint(ip, port);
 
 
@@ -38,45 +36,44 @@ namespace ServerApp
 
                 Clients.Add(client);
 
-                Task.Run(() =>
+
+                var reader = Task.Run(() =>
                 {
-                    var reader = Task.Run(() =>
+                    foreach (var item in Clients)
                     {
-                        foreach (var item in Clients)
+                        Task.Run(() =>
                         {
-                            Task.Run(() =>
+                            Stream = item.GetStream();
+                            BR = new BinaryReader(Stream);
+
+                            try
                             {
-                                Stream = item.GetStream();
-                                BR = new BinaryReader(Stream);
+                                var msg = BR.ReadString();
 
-                                try
+                                if (client.Connected)
                                 {
-                                    var msg = BR.ReadString();
-                                    if (client.Connected)
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Green;
-                                        Console.WriteLine($"CLIENT : {msg} Connected Server");
-                                        Console.ResetColor();
-                                    }
-                                    else
-                                    {
-                                        Console.ForegroundColor = ConsoleColor.Red;
-                                        Console.WriteLine($"{item.Client.RemoteEndPoint}  disconnected");
-                                        Console.ResetColor();
-                                    }
-
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.WriteLine($"CLIENT : {msg} Connected Server");
+                                    Console.ResetColor();
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    Console.WriteLine(ex.Message);
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine($"{item.Client.RemoteEndPoint}  disconnected");
+                                    Console.ResetColor();
                                     Clients.Remove(item);
                                 }
 
-                            });
-                        }
-                    });
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                Clients.Remove(item);
+                            }
 
-                }).Wait(100);
+                        });
+                    }
+                });
             }
         }
     }
