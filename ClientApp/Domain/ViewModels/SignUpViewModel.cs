@@ -85,6 +85,7 @@ namespace ClientApp.Domain.ViewModels
         #endregion
 
 
+
         public SignUpViewModel()
         {
             _accountRepository = new AccountRepository();
@@ -99,7 +100,7 @@ namespace ClientApp.Domain.ViewModels
 
             CloseCommand = new RelayCommand((o) =>
             {
-                Application.Current.Shutdown();
+                App.Current.Shutdown();
             });
 
 
@@ -132,7 +133,7 @@ namespace ClientApp.Domain.ViewModels
                 }
 
                 MessageBox.Show("Successfully Sign Up", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                App.Current.Shutdown();
+                //Application.Current.Windows.;
             });
         }
     }

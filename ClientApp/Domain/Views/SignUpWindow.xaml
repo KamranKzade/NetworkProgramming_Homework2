@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ClientApp.Domain.Views"
         mc:Ignorable="d"
         Title="SignUp"
-        Height="900"
+        Height="650"
         Width="550"
         WindowStyle="None" 
         Name="window"
@@ -149,7 +149,7 @@
                                 Orientation="Vertical"
                                 Margin="5"
                                 >
-                                <Image  Width="100" 
+                        <Image  Width="100" 
                                     Height="100" 
                                     Source="../../Images/icons8-sign-up-64.png"/>
 
@@ -201,7 +201,7 @@
                                             AlignmentX="Left"/>
                             </TextBox.Background>
                         </TextBox>
-                 
+
                         <!-- Email -->
                         <TextBlock Text="Email"
                                    Style="{StaticResource tboxStyle}"/>
@@ -213,14 +213,14 @@
                                         AlignmentX="Left"/>
                             </TextBox.Background>
                         </TextBox>
-                        
+
                         <!-- Birthday -->
                         <TextBlock Text="Birthday" 
                                    HorizontalAlignment="Center"
                                    Style="{StaticResource tboxStyle}"/>
                         <Calendar SelectedDate="{Binding MyBirthDay}" />
 
-                        
+
                         <!-- Username && Password -->
                         <TextBlock Text="Username"
                                    Style="{StaticResource tboxStyle}"/>

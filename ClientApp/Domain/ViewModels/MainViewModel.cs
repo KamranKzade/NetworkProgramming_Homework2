@@ -2,6 +2,7 @@
 using ClientApp.DataAccess;
 using ClientApp.DataAccess.Repositories;
 using ClientApp.Domain.Abstractions;
+using ClientApp.Domain.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +72,9 @@ namespace ClientApp.Domain.ViewModels
 
             SignUpCommand = new RelayCommand((o) =>
             {
-
+                var window = new SignUpWindow();
+                window.DataContext = new SignUpViewModel();
+                window.ShowDialog();
             });
 
 
