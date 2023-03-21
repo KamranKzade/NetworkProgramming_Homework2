@@ -134,8 +134,7 @@ namespace ClientApp.Domain.ViewModels
                     Task.WaitAll(writer);
 
                     Client.Close();
-                    // Client.Dispose();
-                    // Client.Close();
+                    Client.Dispose();
                 }
             });
         }
