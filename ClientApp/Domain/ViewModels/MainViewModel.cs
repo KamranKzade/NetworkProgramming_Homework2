@@ -1,18 +1,14 @@
-﻿using ClientApp.Commands;
-using ClientApp.DataAccess;
-using ClientApp.DataAccess.Repositories;
-using ClientApp.Domain.Abstractions;
-using ClientApp.Domain.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System;
 using System.IO;
+using System.Net;
+using System.Windows;
+using ClientApp.Commands;
+using System.Net.Sockets;
+using ClientApp.Domain.Views;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using ClientApp.Domain.Abstractions;
+using ClientApp.DataAccess.Repositories;
 
 namespace ClientApp.Domain.ViewModels
 {
@@ -100,7 +96,7 @@ namespace ClientApp.Domain.ViewModels
                                 {
                                     var stream = Client.GetStream();
                                     var bw = new BinaryWriter(stream);
-                                    bw.Write(Username);
+                                    bw.Write($"{Username} Servere Qosuldu");
                                 });
                                 Task.WaitAll(writer);
                             }
@@ -129,8 +125,17 @@ namespace ClientApp.Domain.ViewModels
             {
                 if (Client.Connected)
                 {
+                    var writer = Task.Run(() =>
+                    {
+                        var stream = Client.GetStream();
+                        var bw = new BinaryWriter(stream);
+                        bw.Write($"{Username} Serverden Ayrildi");
+                    });
+                    Task.WaitAll(writer);
+
                     Client.Close();
-                    Client.Dispose();
+                    // Client.Dispose();
+                    // Client.Close();
                 }
             });
         }

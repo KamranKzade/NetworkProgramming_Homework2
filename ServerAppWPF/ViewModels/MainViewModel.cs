@@ -43,45 +43,52 @@ namespace ServerAppWPF.ViewModels
                 {
                     var client = Listener.AcceptTcpClient();
                     Clients.Add(client);
-                    Stream = null;
 
                     var reader = Task.Run(() =>
                     {
                         foreach (var item in Clients)
                         {
+                            Stream = null;
+                            BR = null;
                             Task.Run(() =>
                             {
-                                Stream = item.GetStream();
-                                BR = new BinaryReader(Stream);
-
-                                try
+                                while (true)
                                 {
-                                    var msg = BR.ReadString();
+                                    Stream = item.GetStream();
+                                    BR = new BinaryReader(Stream);
+                                   
+                                    try
+                                    {
+                                        //if (item.Connected != true)
+                                        //{
+                                        //    Application.Current.Dispatcher.Invoke(new Action(() =>
+                                        //    {
+                                        //        Clients.Remove(item);
+                                        //        item.Close();
+                                        //        item.Dispose();
+                                        //    }));
+                                        //}
 
-                                    if (client.Connected)
-                                    {
+                                        var msg = BR.ReadString();
+
                                         Application.Current.Dispatcher.Invoke(new Action(() =>
                                         {
-                                            MyListView.Add($"{msg} Connected Server");
+                                            MyListView.Add($"{msg}");
                                         }));
+
+
+
                                     }
-                                    else
+                                    catch (System.IO.EndOfStreamException ex)
                                     {
+                                        MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                         Application.Current.Dispatcher.Invoke(new Action(() =>
                                         {
-                                            MyListView.Add($"{msg} Connected Server");
                                             Clients.Remove(item);
                                         }));
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                                    {
-                                        Clients.Remove(item);
-                                    }));
 
-                                    MessageBox.Show($"{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        MessageBox.Show($"Error", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    }
                                 }
                             }).Wait(5);
                         }
