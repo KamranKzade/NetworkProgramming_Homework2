@@ -4,6 +4,14 @@
              xmlns:local="clr-namespace:ClientApp"
              StartupUri="Domain/Views/MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionaries\ButtonStyle.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries\TextBoxStyle.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries\TextBLockStyle.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries\PasswordBoxStyle.xaml" />
+                <ResourceDictionary Source="ResourceDictionaries\ColorDictionaries.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

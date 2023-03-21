@@ -57,5 +57,17 @@ namespace ClientApp.DataAccess.Repositories
 
             _dataContext.SubmitChanges();
         }
+
+
+
+        public bool CheckUsername(string username, string password)
+        {
+            var data = _dataContext.Accounts.SingleOrDefault(a => a.Username == username && a.Password == password);
+
+            if (data != null)
+                return true;
+            else 
+                return false;
+        }
     }
 }
