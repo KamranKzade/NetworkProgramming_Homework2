@@ -17,20 +17,24 @@ namespace ClientApp.Domain.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        // DataBase Access
+        #region DataAccess
 
         public readonly IAccountRepository _accountRepo;
 
-        // Commands
+        #endregion
+
+        #region Commands
+
         public RelayCommand CloseCommand { get; set; }
         public RelayCommand SignUpCommand { get; set; }
         public RelayCommand SignInCommand { get; set; }
         public RelayCommand MinimizeCommand { get; set; }
         public RelayCommand DisconnectedServerCommand { get; set; }
 
+        #endregion
 
+        #region ElementBinding
 
-        // Element Binding
         private string _username;
         public string Username
         {
@@ -38,7 +42,7 @@ namespace ClientApp.Domain.ViewModels
             set { _username = value; OnPropertyChanged(); }
         }
 
-
+        #endregion
 
 
         public MainViewModel()
