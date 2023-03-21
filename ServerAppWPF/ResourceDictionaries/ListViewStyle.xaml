@@ -6,7 +6,9 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Margin" Value="15"/>
         <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontSize" Value="35"/>
+        <Setter Property="Foreground" Value="Blue"/>
         <Setter Property="FontFamily" Value="Times New Roman"/>
     </Style>
-    
+
 </ResourceDictionary>

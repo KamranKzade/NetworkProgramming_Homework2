@@ -6,11 +6,12 @@
         xmlns:local="clr-namespace:ServerAppWPF"
         mc:Ignorable="d"
         Title="ServerApp"
-        Height="700"
+        Height="600"
         Width="600"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="{StaticResource MainViewBackColor}">
+        Background="{StaticResource MainViewBackColor}" 
+        Icon="/Images/servers-group.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>

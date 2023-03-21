@@ -6,7 +6,7 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using System.Windows.Interop;
+
 
 namespace ServerAppWPF.ViewModels
 {
@@ -42,9 +42,8 @@ namespace ServerAppWPF.ViewModels
                 while (true)
                 {
                     var client = Listener.AcceptTcpClient();
-                    Stream = null;
-
                     Clients.Add(client);
+                    Stream = null;
 
                     var reader = Task.Run(() =>
                     {
