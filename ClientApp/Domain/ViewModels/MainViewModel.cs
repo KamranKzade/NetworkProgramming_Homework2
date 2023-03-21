@@ -98,12 +98,9 @@ namespace ClientApp.Domain.ViewModels
 
                                 var writer = Task.Run(() =>
                                 {
-                                    while (true)
-                                    {
-                                        var stream = Client.GetStream();
-                                        var bw = new BinaryWriter(stream);
-                                        bw.Write(Username);
-                                    }
+                                    var stream = Client.GetStream();
+                                    var bw = new BinaryWriter(stream);
+                                    bw.Write(Username);
                                 });
                                 Task.WaitAll(writer);
                             }

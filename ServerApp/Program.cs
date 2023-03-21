@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ServerApp
 {
@@ -12,8 +13,7 @@ namespace ServerApp
         public static BinaryReader BR { get; set; } = null;
         public static List<TcpClient> Clients { get; set; }
         public static TcpListener Listener { get; set; } = null;
-
-
+        public static NetworkStream Stream { get; set; } = null;
 
 
         static void Main(string[] args)
@@ -34,6 +34,8 @@ namespace ServerApp
             while (true)
             {
                 var client = Listener.AcceptTcpClient();
+                Stream = null;
+
                 Clients.Add(client);
 
                 Task.Run(() =>
@@ -44,8 +46,8 @@ namespace ServerApp
                         {
                             Task.Run(() =>
                             {
-                                var stream = item.GetStream();
-                                BR = new BinaryReader(stream);
+                                Stream = item.GetStream();
+                                BR = new BinaryReader(Stream);
 
                                 try
                                 {
@@ -66,7 +68,7 @@ namespace ServerApp
                                 }
                                 catch (Exception ex)
                                 {
-
+                                    Console.WriteLine(ex.Message);
                                     Clients.Remove(item);
                                 }
 
