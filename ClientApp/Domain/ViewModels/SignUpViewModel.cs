@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using ClientApp.Commands;
 using ClientApp.DataAccess;
 using System.Windows.Controls;
 using ClientApp.Domain.Abstractions;
 using ClientApp.DataAccess.Repositories;
-
 
 namespace ClientApp.Domain.ViewModels
 {
@@ -85,7 +85,6 @@ namespace ClientApp.Domain.ViewModels
         #endregion
 
 
-
         public SignUpViewModel()
         {
             _accountRepository = new AccountRepository();
@@ -100,40 +99,67 @@ namespace ClientApp.Domain.ViewModels
 
             CloseCommand = new RelayCommand((o) =>
             {
-                App.Current.Shutdown();
+                var w = o as Window;
+                w.DialogResult = true;
             });
 
 
             SignUpCommand = new RelayCommand((o) =>
             {
                 var Mypassword = (o as PasswordBox).Password;
-                var Myid = _accountRepository.GetAllData().Last().Id;
+                
+                StringBuilder sb = new StringBuilder();
 
+                if (string.IsNullOrWhiteSpace(Mypassword))
+                    sb.Append("Password is empty\n");
+                else if (string.IsNullOrWhiteSpace(MyName))
+                    sb.Append("Name is empty\n");
+                else if (string.IsNullOrWhiteSpace(MySurname))
+                    sb.Append("Surname is empty\n");
+                else if (string.IsNullOrWhiteSpace(MyCity))
+                    sb.Append("City is empty\n");
+                else if (string.IsNullOrWhiteSpace(MyState))
+                    sb.Append("State is empty\n");
+                else if (string.IsNullOrWhiteSpace(MyEmail))
+                    sb.Append("Email is empty\n");
+                else if (string.IsNullOrWhiteSpace(MyUsername))
+                    sb.Append("Username is empty\n");
+                else if (MyBirthDay == null)
+                    sb.Append("No birthday selected\n");
 
-                Account account = new Account
+                if (sb.Length > 0)
+                    MessageBox.Show(sb.ToString(), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                else
                 {
-                    Id = ++Myid,
-                    Name = MyName,
-                    Surname = MySurname,
-                    City = MyCity,
-                    State = MyState,
-                    Birthday = MyBirthDay,
-                    Email = MyEmail,
-                    Username = MyUsername,
-                    Password = Mypassword,
-                };
-                try
-                {
-                    _accountRepository.AddData(account);
+                    var Myid = _accountRepository.GetAllData().Last().Id;
+                    
+                    Account account = new Account
+                    {
+                        Id = ++Myid,
+                        Name = MyName,
+                        Surname = MySurname,
+                        City = MyCity,
+                        State = MyState,
+                        Birthday = MyBirthDay,
+                        Email = MyEmail,
+                        Username = MyUsername,
+                        Password = Mypassword,
+                    };
+                    
+                    try
+                    {
+                        _accountRepository.AddData(account);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{ex.Message}", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
 
+                    MessageBox.Show("Successfully Sign Up", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    var window = ((((((o as PasswordBox).Parent as StackPanel).Parent as ScrollViewer).Parent as Grid).Parent as Border).Parent as Border).Parent as Window;
+                    window.DialogResult = true;
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"{ex.Message}", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-
-                MessageBox.Show("Successfully Sign Up", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                //Application.Current.Windows.;
             });
         }
     }
