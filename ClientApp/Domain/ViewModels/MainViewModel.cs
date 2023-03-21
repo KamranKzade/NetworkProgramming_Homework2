@@ -6,12 +6,13 @@ using ClientApp.Domain.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-
-
+using System.IO;
 
 namespace ClientApp.Domain.ViewModels
 {
@@ -45,9 +46,21 @@ namespace ClientApp.Domain.ViewModels
         #endregion
 
 
+        public TcpClient Client { get; set; }
+        public IPAddress IPAddress { get; set; }
+        public int Port { get; set; }
+        public IPEndPoint EndPoint { get; set; }
+
         public MainViewModel()
         {
             _accountRepo = new AccountRepository();
+
+
+            Client = new TcpClient();
+            Port = 27001;
+            IPAddress = IPAddress.Parse("192.168.1.16");
+            EndPoint = new IPEndPoint(IPAddress, Port);
+
 
 
             MinimizeCommand = new RelayCommand((o) =>
@@ -66,10 +79,40 @@ namespace ClientApp.Domain.ViewModels
             {
                 var password = (o as PasswordBox).Password;
 
-                var result = _accountRepo.CheckUsername(Username, password);
-                MessageBox.Show(result.ToString());
 
-                // Connected Server
+                var result = _accountRepo.CheckUsername(Username, password);
+
+                if (result is true)
+                {
+                    var button = ((o as PasswordBox).Parent as StackPanel).Children[8] as Button;
+                    button.Visibility = Visibility.Visible;
+                    try
+                    {
+                        Client.Connect(EndPoint);
+
+                        if (Client.Connected)
+                        {
+                            MessageBox.Show("Client Connected SERVER", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            var writer = Task.Run(() =>
+                            {
+                                while (true)
+                                {
+                                    var stream = Client.GetStream();
+                                    var bw = new BinaryWriter(stream);
+                                    bw.Write(Username);
+                                }
+                            });
+                            Task.WaitAll(writer);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{ex.Message}", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+                else
+                    MessageBox.Show("Wrong Username Or Password", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             });
 
@@ -84,7 +127,8 @@ namespace ClientApp.Domain.ViewModels
 
             DisconnectedServerCommand = new RelayCommand((o) =>
             {
-
+                Client.Close();
+                Client.Dispose();
             });
         }
     }

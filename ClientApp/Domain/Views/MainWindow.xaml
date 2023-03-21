@@ -190,7 +190,6 @@
                                 </ControlTemplate>
                             </Button.Template>
                     </Button>
-
                     <Button Content="Sign Up"
                             Padding="25"
                             Command="{Binding SignUpCommand}"
